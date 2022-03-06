@@ -37,9 +37,11 @@ class TestWorkbench:
 
     def swipe_find(self, text, num=3):
         # 滑动查找元素
+        self.driver.implicitly_wait(1)
         for i in range(num):
             try:
                 element = self.driver.find_element(MobileBy.XPATH, f"//*[@text='{text}']")
+                self.driver.implicitly_wait(5)
                 return element
             except:
                 print("未找到")
@@ -54,7 +56,13 @@ class TestWorkbench:
                 self.driver.swipe(start_x, start_y, end_x, end_y, duration=2000)
 
             if i == num - 1:
+                self.driver.implicitly_wait(5)
                 raise NoSuchElementException(f"找了{num}次，未找到")
+
+    def get_time(self):
+        t = time.localtime()
+        cur_time = time.strftime("%Y-%m-%d_%H:%M:%S", t)
+        print(f"当前时间为：{cur_time}")
 
     def test_daka(self):
         """
@@ -73,10 +81,12 @@ class TestWorkbench:
         self.driver.find_element(MobileBy.XPATH, "//*[@text='工作台']").click()
         # 滑动查找
         self.swipe_find("打卡").click()
-        self.driver.update_settings({"waitForIdleTimeout": 0})
+        # self.driver.update_settings({"waitForIdleTimeout": 0})
         # print(time.time())
+        self.get_time()
         self.driver.find_element(MobileBy.XPATH, "//*[@text='外出打卡']").click()
         self.driver.find_element(MobileBy.XPATH, "//*[contains(@text,'次外出')]").click()
         # print(time.time())
+        self.get_time()
         # 验证
         self.driver.find_element(MobileBy.XPATH, "//*[@text='外出打卡成功']")
